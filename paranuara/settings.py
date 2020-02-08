@@ -25,7 +25,7 @@ SECRET_KEY = '*@&%k6i4kq*11npo*k@hj0l63jm(5@1%-me-lpn&i3#^lvt-dh'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # Application definition
@@ -37,6 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Third party apps
+    'rest_framework',
+
+    # Own apps
+    'civilisation',
 ]
 
 MIDDLEWARE = [
@@ -118,3 +124,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+try:
+    from paranuara.local_settings import *
+except ImportError:
+    pass

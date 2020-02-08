@@ -2,5 +2,7 @@
 
 python3 -m venv .venv
 source .venv/bin/activate
+pip3 install pip --upgrade
 pip3 install -r requirements.txt
-source ./manage.py migrate
+python manage.py migrate
+touch paranuara/local_settings.py
