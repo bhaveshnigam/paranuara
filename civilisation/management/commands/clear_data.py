@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from civilisation import models as civilisation_models
 
@@ -10,4 +11,5 @@ class Command(BaseCommand):
         civilisation_models.Citizen.objects.all().delete()
         civilisation_models.CitizenTag.objects.all().delete()
         civilisation_models.FoodItem.objects.all().delete()
-        self.stdout.write(self.style.SUCCESS('Successfully cleared all data from the system'))
+        if not settings.TEST_MODE:
+            self.stdout.write(self.style.SUCCESS('Successfully cleared all data from the system'))

@@ -56,6 +56,5 @@ class Citizen(models.Model):
     greeting = models.TextField()
     favourite_food = models.ManyToManyField(FoodItem)
 
-    @property
-    def friends(self):
-        return self.objects.filter(index__in=self.friends_csv)
+    def get_friends(self):
+        return Citizen.objects.filter(index__in=self.friends_csv.split(','))

@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '*@&%k6i4kq*11npo*k@hj0l63jm(5@1%-me-lpn&i3#^lvt-dh'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
@@ -124,6 +124,29 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 25
+}
+
+RESOURCE_FILES = {
+    'company_data': os.path.join(BASE_DIR, 'resources', 'companies.json'),
+    'people_data': os.path.join(BASE_DIR, 'resources', 'people.json'),
+    'fruit_data': os.path.join(BASE_DIR, 'resources', 'third_party', 'fruits.json'),
+    'vegetable_data': os.path.join(BASE_DIR, 'resources', 'third_party', 'vegetables.json'),
+}
+
+TEST_MODE = False
 
 try:
     from paranuara.local_settings import *

@@ -1,6 +1,5 @@
 import datetime
 import json
-import os
 
 from django.conf import settings
 from django.core.management import call_command
@@ -19,29 +18,43 @@ class Command(BaseCommand):
             help='Keep up old imported data',
         )
 
+    def stdout_write(self, message, style):
+        if not settings.TEST_MODE:
+            self.stdout.write(style(message))
+
     def read_json_file(self, file_path):
+        """Reads a JSON file from the provided file path file."""
         with open(file_path) as json_file:
             return json.load(json_file)
 
     def load_company_data(self):
-        company_json_file = os.path.join(settings.BASE_DIR, 'resources', 'companies.json')
-        company_json_data = self.read_json_file(company_json_file)
+        """Loads the company data from resources/companies.json file."""
+        company_json_data = self.read_json_file(settings.RESOURCE_FILES['company_data'])
         for company_data in company_json_data:
             civilisation_models.Company.objects.create(
                 name=company_data["company"],
                 company_index=company_data["index"] + 1  # Since companies are provided as zero index array
             )
 
+    def get_vegetable_data(self):
+        """
+            Get the classification data list for vegetables.
+            Source: https://github.com/dariusk/corpora/blob/master/data/foods/vegetables.json
+        """
+        return self.read_json_file(settings.RESOURCE_FILES['vegetable_data'])["vegetables"]
+
+    def get_fruits_data(self):
+        """
+            Get the classification data list for fruits.
+            Source: https://github.com/dariusk/corpora/blob/master/data/foods/fruits.json
+        """
+        return self.read_json_file(settings.RESOURCE_FILES['fruit_data'])["fruits"]
+
     def load_people_data(self):
-        people_json_data = self.read_json_file(
-            os.path.join(settings.BASE_DIR, 'resources', 'people.json')
-        )
-        vegetables = self.read_json_file(
-            os.path.join(settings.BASE_DIR, 'resources', 'third_party', 'vegetables.json')
-        )["vegetables"]
-        fruits = self.read_json_file(
-            os.path.join(settings.BASE_DIR, 'resources', 'third_party', 'fruits.json')
-        )["fruits"]
+        """Loads the people data from resources/people.json file."""
+        people_json_data = self.read_json_file(settings.RESOURCE_FILES['people_data'])
+        vegetables = self.get_vegetable_data()
+        fruits = self.get_fruits_data()
         for individual in people_json_data:
             company = civilisation_models.Company.objects.filter(
                 company_index=individual['company_id'],
@@ -97,12 +110,13 @@ class Command(BaseCommand):
                 citizen.favourite_food.add(food_item_object)
 
     def handle(self, *args, **options):
+        """Execute command"""
         if not options.get('keep_old_data', False):
-            self.stdout.write(self.style.NOTICE('Proceeding to clean all of the old data'))
+            self.stdout_write('Proceeding to clean all of the old data', self.style.WARNING)
             call_command('clear_data')
 
-        self.stdout.write(self.style.NOTICE('Proceeding to import company data'))
+        self.stdout_write('Proceeding to import company data', self.style.WARNING)
         self.load_company_data()
-        self.stdout.write(self.style.NOTICE('Proceeding to import people data'))
+        self.stdout_write('Proceeding to import people data', self.style.WARNING)
         self.load_people_data()
-        self.stdout.write(self.style.SUCCESS('Data imported'))
+        self.stdout_write('Data imported', self.style.SUCCESS)
