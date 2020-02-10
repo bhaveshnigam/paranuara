@@ -22,7 +22,7 @@ class CitizenSerializer(serializers.ModelSerializer):
         model = Citizen
         fields = ('name', 'has_died', 'balance', 'picture', 'age', 'eye_color', 'gender',
                   'company_name', 'email', 'phone', 'address', 'about', 'registered', 'tags', 'greeting',
-                  'favourite_food', '_id', 'guid', 'index')
+                  'favourite_food')
 
     def get_tags(self, obj):
         return obj.tags.values_list('name', flat=True)

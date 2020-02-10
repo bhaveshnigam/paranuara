@@ -14,6 +14,12 @@
 
 ### Resources
 Provided resources are kept in ```resources/``` folder accessible from the root of the project
+In case one wants to modify the resource data, consider replacing the files ```resource/people.json``` or ```resource/companies.json```
+After that, run ```./manage.py load_data```
+This would clean up the old data and then import the new data set.
+> Note: file names are strict and thus should be kept the same.
+
+* To clean all resource data from the database, Run ```./manage.py clear_data```
 
 ### Endpoints
 BASE_URL = ```http://localhost:8000```

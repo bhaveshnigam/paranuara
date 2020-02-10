@@ -31,7 +31,10 @@ class CitizenMutualFriends(generics.RetrieveAPIView):
 
     def get_mutual_friends(self, person_1, person_2):
         """Get mutual friends common between person 1 and person 2, who are alive and have brown eyes"""
-        mutual_friend_ids = set(person_1.friends_csv.split(',')).intersection(set(person_2.friends_csv.split(',')))
+        person_1_friends_csv = set(person_1.friends_csv.split(','))
+        person_2_friends_csv = set(person_2.friends_csv.split(','))
+        mutual_friend_ids = person_1_friends_csv.intersection(person_2_friends_csv)
+
         citizen_queryset = Citizen.objects.filter(
             index__in=mutual_friend_ids,
             has_died=False,
